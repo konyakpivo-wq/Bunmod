@@ -17,8 +17,12 @@ archivesBaseName = "BunMod"
 sourceCompatibility = targetCompatibility = "1.8"
 compileJava.options.encoding = "UTF-8"
 
+def minecraftVersion = "1.12.2"
+
+def forgeVersion = "14.23.5.2860"
+
 minecraft {
-    version = "1.12.2-14.23.5.2860"
+    version = "${minecraftVersion}-${forgeVersion}"
     runDir = "run"
     mappings = "stable_39"
     makeObfSourceJar = false
@@ -26,11 +30,11 @@ minecraft {
 
 processResources {
     inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+    inputs.property "mcversion", minecraftVersion
 
     from(sourceSets.main.resources.srcDirs) {
         include "mcmod.info"
-        expand "version": project.version, "mcversion": project.minecraft.version
+        expand "version": project.version, "mcversion": minecraftVersion
     }
     from(sourceSets.main.resources.srcDirs) {
         exclude "mcmod.info"
