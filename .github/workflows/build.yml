@@ -1,4 +1,4 @@
-name: Build BunMod
+name: Build BunMod 1.13.2
 
 on:
   workflow_dispatch:
@@ -32,6 +32,6 @@ jobs:
       - name: Upload mod JAR
         uses: actions/upload-artifact@v4
         with:
-          name: BunMod-1.12.2
+          name: BunMod-1.13.2
           path: build/libs/*.jar
           if-no-files-found: error
