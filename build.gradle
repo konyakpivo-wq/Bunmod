@@ -1,47 +1,79 @@
 buildscript {
     repositories {
-        maven { url = "https://maven.minecraftforge.net" }
+        maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.0.105', changing: true
     }
 }
 
-apply plugin: "net.minecraftforge.gradle.forge"
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
-version = "1.0.0"
-group = "ru.konyakpivo.bunmod"
-archivesBaseName = "BunMod"
+version = '1.0.0'
+group = 'ru.konyakpivo.bunmod'
+archivesBaseName = 'BunMod'
 
-sourceCompatibility = targetCompatibility = "1.8"
-compileJava.options.encoding = "UTF-8"
-
-def minecraftVersion = "1.12.2"
-def forgeVersion = "14.23.5.2847"
-
-task printBuildInfo {
-    doLast {
-        println "Building BunMod for Minecraft ${minecraftVersion} with Forge ${forgeVersion}"
-    }
-}
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    version = "${minecraftVersion}-${forgeVersion}"
-    runDir = "run"
-    mappings = "snapshot_20171003"
-    makeObfSourceJar = false
+    mappings channel: 'snapshot', version: '20180921-1.13'
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                bunmod {
+                    source sourceSets.main
+                }
+            }
+        }
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                bunmod {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+def minecraftVersion = '1.13.2'
+def forgeVersion = '25.0.223'
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}"
 }
 
 processResources {
-    inputs.property "version", project.version
-    inputs.property "mcversion", minecraftVersion
+    inputs.property 'version', project.version
+    inputs.property 'mcversion', minecraftVersion
 
     from(sourceSets.main.resources.srcDirs) {
-        include "mcmod.info"
-        expand "version": project.version, "mcversion": minecraftVersion
+        include 'mcmod.info'
+        expand 'version': project.version, 'mcversion': minecraftVersion
     }
     from(sourceSets.main.resources.srcDirs) {
-        exclude "mcmod.info"
+        exclude 'mcmod.info'
+    }
+}
+
+jar {
+    manifest {
+        attributes([
+            'Specification-Title': 'Bun Mod',
+            'Specification-Vendor': 'BunMod',
+            'Specification-Version': '1',
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.version,
+            'Implementation-Vendor': 'BunMod'
+        ])
     }
 }
