@@ -18,16 +18,30 @@ jobs:
           distribution: temurin
           java-version: '8'
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '4.9'
+      - name: Install official Forge 1.13.2 MDK
+        shell: bash
+        run: |
+          set -e
+          curl -L --fail --retry 5 --retry-delay 3 \
+            -o /tmp/forge-mdk.zip \
+            https://maven.minecraftforge.net/net/minecraftforge/forge/1.13.2-25.0.223/forge-1.13.2-25.0.223-mdk.zip
+          rm -rf /tmp/forge-mdk
+          mkdir -p /tmp/forge-mdk
+          unzip -q /tmp/forge-mdk.zip -d /tmp/forge-mdk
+          cp /tmp/forge-mdk/build.gradle ./build.gradle
+          cp /tmp/forge-mdk/gradle.properties ./gradle.properties
+          cp /tmp/forge-mdk/settings.gradle ./settings.gradle
+          cp /tmp/forge-mdk/gradlew ./gradlew
+          cp /tmp/forge-mdk/gradlew.bat ./gradlew.bat
+          rm -rf ./gradle
+          cp -R /tmp/forge-mdk/gradle ./gradle
+          chmod +x ./gradlew
 
       - name: Build Forge mod
-        run: gradle --no-daemon build
+        run: ./gradlew --no-daemon build
 
       - name: List build output
-        run: ls -la build/libs || true
+        run: ls -la build/libs
 
       - name: Upload mod JAR
         uses: actions/upload-artifact@v4
