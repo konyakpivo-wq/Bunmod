@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "bunmod",
+    "name": "Bun Mod",
+    "description": "Adds a small bun crafted from one wheat.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["BunMod"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
