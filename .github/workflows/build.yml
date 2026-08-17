@@ -18,24 +18,34 @@ jobs:
           distribution: temurin
           java-version: '8'
 
-      - name: Install official Forge 1.13.2 MDK
+      - name: Download and unpack official Forge 1.13.2 MDK
         shell: bash
         run: |
           set -e
           curl -L --fail --retry 5 --retry-delay 3 \
             -o /tmp/forge-mdk.zip \
             https://maven.minecraftforge.net/net/minecraftforge/forge/1.13.2-25.0.223/forge-1.13.2-25.0.223-mdk.zip
+
           rm -rf /tmp/forge-mdk
           mkdir -p /tmp/forge-mdk
           unzip -q /tmp/forge-mdk.zip -d /tmp/forge-mdk
+
+          test -f /tmp/forge-mdk/build.gradle
+          test -f /tmp/forge-mdk/gradlew
+          test -d /tmp/forge-mdk/gradle
+
           cp /tmp/forge-mdk/build.gradle ./build.gradle
           cp /tmp/forge-mdk/gradle.properties ./gradle.properties
-          cp /tmp/forge-mdk/settings.gradle ./settings.gradle
           cp /tmp/forge-mdk/gradlew ./gradlew
           cp /tmp/forge-mdk/gradlew.bat ./gradlew.bat
+
           rm -rf ./gradle
           cp -R /tmp/forge-mdk/gradle ./gradle
           chmod +x ./gradlew
+
+          echo "Forge MDK installed:"
+          ls -la
+          ls -la gradle/wrapper
 
       - name: Build Forge mod
         run: ./gradlew --no-daemon build
