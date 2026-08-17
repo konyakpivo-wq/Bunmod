@@ -23,11 +23,15 @@ jobs:
         with:
           gradle-version: '4.9'
 
-      - name: Build with Gradle
-        run: gradle build
+      - name: Build Forge mod
+        run: gradle --no-daemon build
+
+      - name: List build output
+        run: ls -la build/libs || true
 
       - name: Upload mod JAR
         uses: actions/upload-artifact@v4
         with:
           name: BunMod-1.12.2
           path: build/libs/*.jar
+          if-no-files-found: error
