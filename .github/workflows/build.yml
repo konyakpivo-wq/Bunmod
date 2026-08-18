@@ -1,14 +1,14 @@
-name: Build BunMod 1.13.2
+name: Build Minecraft 1.13.2 Mod
 
 on:
-  workflow_dispatch:
   push:
     branches:
-      - mc-1.13.2
+      - minecraft-1.13.2
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout
@@ -21,22 +21,15 @@ jobs:
           java-version: '8'
 
       - name: Install Gradle 4.9
-        run: |
-          wget -q https://services.gradle.org/distributions/gradle-4.9-bin.zip
-          unzip -q gradle-4.9-bin.zip
-          echo "$PWD/gradle-4.9/bin" >> "$GITHUB_PATH"
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '4.9'
 
-      - name: Check Gradle
-        run: gradle --version
-
-      - name: Build mod
+      - name: Build
         run: gradle --no-daemon build
-
-      - name: Show build output
-        run: ls -la build/libs
 
       - name: Upload mod
         uses: actions/upload-artifact@v4
         with:
-          name: BunMod-1.13.2
+          name: Bunmod-1.13.2
           path: build/libs/*.jar
