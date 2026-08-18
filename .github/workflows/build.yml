@@ -1,0 +1,35 @@
+name: Build BunMod 1.13.2
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+      - name: Set up Java 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
+      - name: Make Gradle executable
+        run: chmod +x gradlew
+      - name: Ensure Gradle wrapper JAR exists
+        run: |
+          mkdir -p gradle/wrapper
+          if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
+            curl -L --fail --retry 5 -o gradle/wrapper/gradle-wrapper.jar https://raw.githubusercontent.com/gradle/gradle/v4.9/gradle/wrapper/gradle-wrapper.jar
+          fi
+      - name: Build with Gradle Wrapper
+        run: ./gradlew --no-daemon build
+      - name: List build output
+        run: ls -la build/libs
+      - name: Upload mod JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: BunMod-1.13.2
+          path: build/libs/*.jar
+          if-no-files-found: error
