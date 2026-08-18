@@ -20,13 +20,19 @@ jobs:
           distribution: temurin
           java-version: '8'
 
-      - name: Make Gradle executable
-        run: chmod +x ./gradlew
+      - name: Install Gradle 4.9
+        run: |
+          wget -q https://services.gradle.org/distributions/gradle-4.9-bin.zip
+          unzip -q gradle-4.9-bin.zip
+          echo "$PWD/gradle-4.9/bin" >> "$GITHUB_PATH"
+
+      - name: Check Gradle
+        run: gradle --version
 
       - name: Build mod
-        run: ./gradlew --no-daemon build
+        run: gradle --no-daemon build
 
-      - name: List build output
+      - name: Show build output
         run: ls -la build/libs
 
       - name: Upload mod
