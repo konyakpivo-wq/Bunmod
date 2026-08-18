@@ -1,0 +1,21 @@
+modLoader="javafml"
+loaderVersion="[25,)"
+license="MIT"
+[[mods]]
+modId="bunmod"
+version="1.0.0"
+displayName="Bun Mod"
+authors="BunMod"
+description='''Adds a bun food item crafted from one wheat.'''
+[[dependencies.bunmod]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.bunmod]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.13.2]"
+    ordering="NONE"
+    side="BOTH"
