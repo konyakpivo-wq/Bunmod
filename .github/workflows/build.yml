@@ -3,12 +3,12 @@ name: Build Minecraft 1.13.2 Mod
 on:
   push:
     branches:
-      - minecraft-1.13.2
+      - mc-1.13.2
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
@@ -25,11 +25,29 @@ jobs:
         with:
           gradle-version: '4.9'
 
-      - name: Build
-        run: gradle --no-daemon build
+      - name: Show project files
+        run: |
+          echo "Branch: $GITHUB_REF_NAME"
+          echo "Java:"
+          java -version
+          echo "Gradle:"
+          gradle --version
+          echo "Project files:"
+          find . -maxdepth 3 -type f | sort
 
-      - name: Upload mod
+      - name: Build Forge mod
+        run: gradle --no-daemon --stacktrace build
+
+      - name: List build output
+        if: always()
+        run: |
+          echo "Build output:"
+          find build -maxdepth 3 -type f -print 2>/dev/null || true
+
+      - name: Upload mod JAR
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: Bunmod-1.13.2
           path: build/libs/*.jar
+          if-no-files-found: error
